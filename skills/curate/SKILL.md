@@ -1,6 +1,6 @@
 ---
 name: curate
-description: Use when the user asks, in a named module, to write or update a knowledge-base page (concept, table, contract, or usage flow) from a raw artifact, a schema or table export, or code, for example "write a contract page for X", or to mark an artifact processed. Not for answering questions from existing pages or registering modules.
+description: Use when the user asks, in a named module, to write or update a knowledge-base page (concept, table, contract, usage flow, or pattern) from a raw artifact, a schema or table export, or code, for example "write a contract page for X", or to mark an artifact processed. Not for answering questions from existing pages or registering modules.
 ---
 
 # Curate
@@ -15,6 +15,9 @@ description: Use when the user asks, in a named module, to write or update a kno
    - contract: a function, class, or API that others call →
      `contracts/<name>.md`;
    - usage flow: a user or system flow across steps → `usage/<name>.md`;
+   - pattern: one technical shape repeated in two or more places →
+     `patterns/<name>.md`. There is no pattern template: use the usage
+     flow template and list every place the shape occurs;
    - concept: the module's purpose, boundaries, and terms → `concept.md`.
      If the module has no `concept.md` yet, write it first.
 3. If a page for the same subject exists, update it instead of creating a

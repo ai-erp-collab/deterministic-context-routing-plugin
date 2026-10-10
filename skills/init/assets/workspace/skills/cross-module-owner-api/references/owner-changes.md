@@ -1,8 +1,8 @@
 # Owner Changes (command mode)
 
-Read from `../SKILL.md` section 4-6. Section numbers continue from there.
+Read from `../SKILL.md` section 4. These are its three steps.
 
-## 4. Change the owner (command mode only)
+## 4.1 Change the owner
 
 1. Read the owner module `AGENTS.md`; its rules govern its files.
 2. Find the existing helper where the rule already lives. If the rule
@@ -17,7 +17,7 @@ Read from `../SKILL.md` section 4-6. Section numbers continue from there.
 5. If you change an existing owner API, check every consumer listed on
    its contract page and update their adapters in the same task.
 
-## 5. Mark the owner (every write into the owner, code or knowledge)
+## 4.2 Mark the owner (every write into the owner, code or knowledge)
 
 1. Owner contract page: add the consumer to `consumers:` and one line to
    `## Change History` (date, consumer, what changed, why).
@@ -29,7 +29,7 @@ Read from `../SKILL.md` section 4-6. Section numbers continue from there.
    module and the owner API.
 4. Root `session_state.md`: name both modules.
 
-## 6. Checks
+## 4.3 Checks
 
 - Search the consumer for the owner's table and helper names: nothing
   owner-specific may remain outside documentation.

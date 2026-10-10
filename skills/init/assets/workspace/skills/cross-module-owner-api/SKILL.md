@@ -45,7 +45,12 @@ Add a link to the owner contract page in the consumer's usage or concept
 page. If every future task in the consumer should know it, also add one
 line under `## Cross-Module Links` in the consumer module `AGENTS.md`.
 
-## 4-6. Change, mark, and check the owner
+## 4. Change, mark, and check the owner (command mode only)
 
-In command mode, before writing anything into the owner module (code or
-knowledge), read `references/owner-changes.md` and follow it.
+Before writing anything into the owner module (code or knowledge), read
+`references/owner-changes.md` and follow its three steps in order:
+
+1. Change the owner: add an owner API, keep only an adapter in the
+   consumer.
+2. Mark the owner: contract page, owner, consumer, and root session logs.
+3. Check: nothing owner-specific is left in the consumer.

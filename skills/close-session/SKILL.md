@@ -18,10 +18,17 @@ description: Use when the user ends or pauses work in a module ("close the sessi
    Write the minimal entry a new session can continue from alone, ending
    with one next step concrete enough to start without asking. End it
    with the line `<!-- AGENT-SESSION-STOP -->`.
-3. Insert a short entry at the top of root `session_state.md`: title
-   `<module>: <task summary>`, the last active module, a one-line summary
-   of workspace docs changed, and the same next useful action, ending
-   with the stop marker.
+3. Insert a short entry at the top of root `session_state.md`, in the
+   same shape as its other entries:
+
+   ```
+   ## YYYY-MM-DD - <module>: <task summary>
+   - Last active module: `<module>`.
+   - Workspace docs: <one-line summary of docs changed>.
+   - Verification: <checks run>.
+   - Next useful action: <the same next action as the module entry>.
+   <!-- AGENT-SESSION-STOP -->
+   ```
 4. Ask the user: "Did a recurring problem or workaround come up that
    future tasks must know about?" If yes, add a section to
    `known_issues.md` with **Symptom**, **Cause**, and **Required

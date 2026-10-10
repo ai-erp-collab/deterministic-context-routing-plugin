@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.1 - 2026-10-10
+
+- `curate`: new page type `pattern` (`patterns/<name>.md`), so the
+  `patterns/` slot in module indexes can be filled.
+- `close-session`: the root log entry now has an explicit dated shape,
+  matching the entries `init` writes.
+- `cross-module-owner-api`: owner-change steps numbered 4.1-4.3 under one
+  section 4.
+
 ## 0.1.0 - 2026-10-10
 
 - First release: skills `init`, `add-module`, `curate`, `close-session`,
