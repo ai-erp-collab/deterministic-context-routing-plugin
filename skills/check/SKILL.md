@@ -12,7 +12,9 @@ description: Use when the user asks for a workspace health check, audit, or chec
    wrong context for that module.
 2. Indexes: in each `knowledge-base/**/INDEX.md`, every linked file
    exists, and every page in that folder and its subfolders is listed.
-   **minor**.
+   The skeleton's slot lines (`concept.md`, `tables/`, `contracts/`,
+   `usage/`, `patterns/`) are not defects while their target does not
+   exist yet. **minor**.
 3. Session logs: every `modules/*/session_state.md` on disk has the line
    `<!-- AGENT-SESSION-STOP -->` after its first entry. **minor**.
 4. Confidence: every page under `knowledge-base/modules/*/` except
@@ -22,7 +24,8 @@ description: Use when the user asks for a workspace health check, audit, or chec
 
 5. Read `docs/checks/OPEN.md` if it exists. Then write the dated report
    and rewrite `OPEN.md` as described in `references/report-format.md`.
-   Read that file before writing either.
+   Read that file before writing either. When nothing is open, `OPEN.md`
+   keeps its `next-id` line and says `No open issues.` instead of a table.
 6. Update the pointer in `known_issues.md` under `## Workspace Health`,
    using exactly this shape:
 
@@ -39,5 +42,6 @@ description: Use when the user asks for a workspace health check, audit, or chec
 ## Fix
 
 8. Only when the user names ids ("fix #3, #5"): apply the proposed fix
-   of each named issue, nothing more, then run the checks again so the
-   report, `OPEN.md`, and the pointer reflect the result.
+   of each named issue, nothing more, then run the checks again and
+   follow steps 5-7 so the report, `OPEN.md`, and the pointer reflect
+   the result.

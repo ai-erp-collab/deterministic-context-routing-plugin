@@ -15,7 +15,9 @@ description: Use when the user ends or pauses work in a module ("close the sessi
    - assumptions and confidence;
    - checks run and what remains unverified;
    - exactly one next useful action.
-   End it with the line `<!-- AGENT-SESSION-STOP -->`.
+   Write the minimal entry a new session can continue from alone, ending
+   with one next step concrete enough to start without asking. End it
+   with the line `<!-- AGENT-SESSION-STOP -->`.
 3. Insert a short entry at the top of root `session_state.md`: title
    `<module>: <task summary>`, the last active module, a one-line summary
    of workspace docs changed, and the same next useful action, ending

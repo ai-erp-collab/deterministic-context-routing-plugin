@@ -8,6 +8,11 @@ An issue's key is `check number + file + subject` (for example
 across runs. A new issue takes the `next-id` value from `OPEN.md`
 (start at 1), and `next-id` goes up by one. Ids are never reused.
 
+One defect is one issue: each missing registry entry (`frontend path`,
+`frontend wiki`), each broken or missing index line, each session log,
+and each unlabeled page gets its own row, even when one typo causes
+several of them.
+
 ## Dated report
 
 Path: `docs/checks/YYYY-MM-DD-check.md`. If that file exists, use
