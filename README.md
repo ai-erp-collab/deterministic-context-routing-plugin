@@ -3,17 +3,43 @@
 Give your coding agent exactly the context it needs in a large codebase,
 and let it keep its thread across sessions.
 
+Run these two commands one after the other inside Claude Code. The first
+adds this repository as a plugin marketplace; the second installs the
+plugin from it.
+
 ```
 /plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin
 /plugin install context-routing@deterministic-context-routing
 ```
 
-![Context routing compared with a flat-memory setup on the same tasks](assets/demo.gif)
+From a regular terminal, the same two steps are:
 
-The demo compares context routing with a flat-memory setup on the same six
-tasks: about 30% lower total cost. This is a self-run case study; method,
-raw numbers, and limitations are in
-[Evidence/02](https://github.com/ai-erp-collab/deterministic-context-routing/blob/main/Evidence/02-context-mechanism-vs-flat-memory-pattern.md).
+```
+claude plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin
+claude plugin install context-routing@deterministic-context-routing
+```
+
+![Context routing in action](assets/demo.gif)
+
+## What you get
+
+- **Pick up where you left off.** End a session today or a month from now;
+  the next one reads the last log entry and continues from the recorded
+  next step, with nothing to explain again.
+- **Switch modules freely.** Each module keeps its own log, so moving
+  between modules and back never mixes their threads.
+- **Complete history per module.** Every session stays on record; the
+  timeline of a module can be rebuilt from its log, not from memory.
+- **Smaller, cheaper context.** The agent is routed to a few short curated
+  pages instead of scanning raw sources.
+- **Facts with confidence labels.** Each knowledge page marks what is
+  confirmed and what is assumed, and the agent treats them differently.
+- **Ask in your own terms.** A module page maps the words your team uses to
+  the files and objects behind them.
+- **Reuse instead of copy.** When another module already owns a rule, the
+  agent calls it through that module's API rather than duplicating it.
+- **Documentation as a by-product.** Knowledge pages grow out of real tasks,
+  not a separate write-up project.
 
 `context-routing` turns a repository into a plain-Markdown workspace with a
 fixed reading order: a short rules file, a module registry, curated
@@ -48,8 +74,8 @@ Measured 2026-10-10 with 2.1.158 (Claude Code)
 | `known_issues.md` (read before non-trivial tasks) | 428 |
 | **Total** | 1886 |
 
-Two runs agreed within 1%. Besides the case study linked under the demo,
-these are the only numbers claimed here. No benchmarks.
+Two runs agreed within 1%. Comparative measurements are in the
+methodology's evidence, linked under "Proven on".
 
 ## What it runs, sends, and fetches
 
@@ -64,5 +90,4 @@ Large proprietary ERP. Evidence, experiments, and reasoning live in the
 
 ## License
 
-Plugin: MIT, use freely. Methodology text: BSL 1.1, see
-[the methodology repository](https://github.com/ai-erp-collab/deterministic-context-routing).
+MIT, use freely. See [LICENSE](LICENSE).
