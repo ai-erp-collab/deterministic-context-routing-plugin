@@ -1,6 +1,6 @@
 ---
 name: curate
-description: Use when the user asks, in a named module, to turn a raw artifact, a schema or table export, or a piece of code into a knowledge-base page (concept, table, contract, or usage flow), or to mark an artifact processed. Not for answering questions from existing pages and not for registering modules (use add-module).
+description: Use when the user asks, in a named module, to write or update a knowledge-base page (concept, table, contract, or usage flow) from a raw artifact, a schema or table export, or code, for example "write a contract page for X", or to mark an artifact processed. Not for answering questions from existing pages or registering modules.
 ---
 
 # Curate
