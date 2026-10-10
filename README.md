@@ -21,7 +21,31 @@ claude plugin install context-routing@deterministic-context-routing
 
 ![Context routing in action](assets/demo.gif)
 
-## What you get
+## How it works
+
+`init` turns your repository into a plain-Markdown workspace with four parts:
+
+- **Context routing.** Every task takes the same path: rules file ->
+  module registry -> the module's page -> its knowledge pages -> its
+  session log. The agent reads the few short pages the task needs and
+  nothing else. (`init`, `add-module`)
+- **Curated knowledge base.** Code, schemas, and other raw material become
+  short linked pages (concepts, tables, contracts, usage flows) before an
+  agent needs them, so routing lands on a ready answer, not on raw
+  sources. (`curate`)
+- **Confidence labels.** Each claim is marked confirmed, inferred,
+  runtime-unverified, or blocked-by-access, so you and the agent both see
+  what was really checked. (`curate`, `check`)
+- **Session log.** Each module keeps a newest-first log of intent,
+  evidence, assumptions, and the next step: what git history does not
+  record. (`close-session`)
+
+The workspace keeps working without the plugin for any agent that reads
+`AGENTS.md`.
+
+## What you get on top
+
+Once the workspace is filled in, these follow without extra setup:
 
 - **Pick up where you left off.** End a session today or a month from now;
   the next one reads the last log entry and continues from the recorded
@@ -30,22 +54,14 @@ claude plugin install context-routing@deterministic-context-routing
   between modules and back never mixes their threads.
 - **Complete history per module.** Every session stays on record; the
   timeline of a module can be rebuilt from its log, not from memory.
-- **Smaller, cheaper context.** The agent is routed to a few short curated
-  pages instead of scanning raw sources.
-- **Facts with confidence labels.** Each knowledge page marks what is
-  confirmed and what is assumed, and the agent treats them differently.
 - **Ask in your own terms.** A module page maps the words your team uses to
   the files and objects behind them.
+- **The agent acts on what is checked.** It relies on confirmed facts and
+  treats unverified ones with care.
 - **Reuse instead of copy.** When another module already owns a rule, the
   agent calls it through that module's API rather than duplicating it.
 - **Documentation as a by-product.** Knowledge pages grow out of real tasks,
   not a separate write-up project.
-
-`context-routing` turns a repository into a plain-Markdown workspace with a
-fixed reading order: a short rules file, a module registry, curated
-knowledge pages per module, and a newest-first session log. After setup the
-workspace keeps working without the plugin for any agent that reads
-`AGENTS.md`.
 
 ## Skills
 
