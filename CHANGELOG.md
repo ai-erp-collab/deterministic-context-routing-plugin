@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 - 2026-10-10
+
+- Plugin icon (`.claude-plugin/icon.png`) for the plugin directory listing.
+
 ## 0.1.1 - 2026-10-10
 
 - `curate`: new page type `pattern` (`patterns/<name>.md`), so the
