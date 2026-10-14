@@ -1,6 +1,6 @@
 ---
 name: check
-description: Use when the user asks for a workspace health check, audit, or check report, or asks to fix numbered issues from that report, for example "fix #3". Finds broken registry paths, index gaps, missing session stop markers, and missing confidence labels. Reports only; changes nothing the user did not name.
+description: Use when the user asks for a workspace health check, audit, or check report, or asks to fix numbered issues from that report, for example "fix issue 3". Finds broken registry paths, index gaps, missing session stop markers, and missing confidence labels. Reports only; changes nothing the user did not name.
 ---
 
 # Check

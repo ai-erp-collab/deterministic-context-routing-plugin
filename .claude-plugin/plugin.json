@@ -1,6 +1,6 @@
 {
   "name": "context-routing",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Deterministic Context Routing: a file-based workspace that gives your coding agent exactly the context it needs in a large codebase and keeps its thread across sessions.",
   "author": {
     "name": "ai-erp-collab",

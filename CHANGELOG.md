@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3 - 2026-10-14
+
+- `check`: the skill description no longer contains `#`, which YAML read
+  as the start of a comment and cut the description in half.
+
 ## 0.1.2 - 2026-10-10
 
 - Plugin icon (`.claude-plugin/icon.png`) for the plugin directory listing.
