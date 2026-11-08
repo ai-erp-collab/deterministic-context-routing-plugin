@@ -18,6 +18,7 @@ DEFAULT_CONFIG = {
     "families": {},
     "keyword_blocks": {},
     "accepted_duplicates": [],
+    "link_ignore": [],
     "tiers": {},
     "migrations_applied": [],
 }

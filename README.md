@@ -117,6 +117,14 @@ the workspace only, and makes no network calls. No MCP servers.
 Large proprietary ERP. Evidence, experiments, and reasoning live in the
 [Deterministic Context Routing methodology](https://github.com/ai-erp-collab/deterministic-context-routing).
 
+## Generated files
+
+`skills/kb/`, `skills/cross-module-owner-api/`, and the `assets/` folders
+of `init` and `add-module` are generated from the workspace template on
+every release. Inside a workspace, `skills/kb/` and `.codex/skills/kb/`
+are identical copies. Report changes to these files as issues rather than
+editing the copies.
+
 ## License
 
 MIT, use freely. See [LICENSE](LICENSE).

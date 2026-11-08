@@ -135,15 +135,19 @@ def post_write(ws, payload: dict) -> List[str]:
     scope = checks.Scope(set(rels))
     journal = Journal(ws)
     journal.start_run("hook post-write")
-    checks.apply_fixes(ws, checks.run_checks(ws, scope), journal, safe_only=True)
+    first = checks.run_checks(ws, scope)
+    checks.apply_fixes(ws, first, journal, safe_only=True)
     touched = {e[0] for e in journal.edits}
     resolve.build_index(ws, set(rels) | touched)
-    issues = checks.run_checks(ws, checks.Scope(set(rels) | touched))
+    if journal.edits:
+        issues = checks.run_checks(ws, checks.Scope(set(rels) | touched))
+    else:  # nothing edited: the first run stands, except the index issues build_index just settled
+        issues = [i for i in first if i.check != 15]
     ids = open_ids(ws)
     lines = [summary_line("check", issues)] + [_with_id(i, ids) for i in issues] + [SKILL_HINT] if issues else []
     if journal.edits:
         n = len(journal.edits)
-        lines.append("kb fix: %d edit%s applied (run %s; undo with kb undo %s)"
+        lines.append("kb fix: %d edit%s applied, run_id: %s (undo with kb undo %s)"
                      % (n, "" if n == 1 else "s", journal.run_id, journal.run_id))
         lines += ["%s: %s -> %s" % e for e in journal.edits]
     return lines

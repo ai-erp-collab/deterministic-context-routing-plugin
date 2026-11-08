@@ -16,8 +16,12 @@ missing or older than 3.9 (the tool needs Python 3.9 or later).
      stop.
    - Otherwise it prints a plan: files to add or replace, project-edited
      files that get a `<file>.new` beside them, the managed block in the
-     rules files, hook entries to merge, data migrations, and questions.
-2. Show the plan to the user. **ASK** each question it lists:
+     rules files, hook entries to merge, data migrations, legacy
+     `[[...]]` links it will convert or leave as issues, links in
+     `AGENTS.md` and session logs that will not open, and questions.
+2. Show the plan to the user, including both link lists: the
+   conversions rewrite links across the wiki, and the broken links
+   become blocking issues. **ASK** each question it lists:
    - evidence folders per module (table exports, library sources, usage
      examples, documents), passed as `--set-evidence <Module>=<path>;<path>`,
      or `--set-evidence <Module>=` for none;
@@ -48,4 +52,5 @@ Record the upgrade at the top of root `session_state.md`:
 
 If the upgrade stops partway, run step 3 again; finished steps are
 skipped. To undo it, `python tools/kb/kb.py upgrade --rollback`
-restores the snapshot.
+restores the snapshot; it refuses and lists the files when anything
+changed after the upgrade.

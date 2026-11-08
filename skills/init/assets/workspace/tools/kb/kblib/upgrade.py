@@ -7,6 +7,7 @@ import datetime
 import hashlib
 import json
 import os
+import posixpath
 import re
 import zipfile
 from dataclasses import dataclass, field
@@ -18,6 +19,8 @@ from .checks import iter_files, register_check
 from .issues import Issue, Scope
 from .journal import Journal
 from .links import _kb_pages
+
+KB_PREFIX = "knowledge-base/"
 from .markdown import extract_links
 from .migrations import Question, all_migrations
 from .migrations.m001_initial import LEGACY_READMES, UNIMPORTED, legacy_baseline
@@ -117,6 +120,8 @@ class UpgradePlan:
     migrations: List[str] = field(default_factory=list)
     questions: List[Question] = field(default_factory=list)
     block: str = ""
+    legacy_links: list = field(default_factory=list)  # check-3 issues the upgrade's link step would meet
+    rules_links: list = field(default_factory=list)  # check-2 issues in rules files and logs after the upgrade
 
     @property
     def empty(self) -> bool:
@@ -189,6 +194,16 @@ def plan_upgrade(ws, src: Path, answers: Optional[dict] = None) -> UpgradePlan:
         if m.needs(ws):
             plan.migrations.append(m.ID)
             plan.questions += [q for q in m.questions(ws) if not _answered(q, answers)]
+    if plan.migrations:
+        plan.legacy_links = checks.run_checks(ws, Scope(None), {3})
+    arriving = set(plan.add)
+    for i in checks.run_checks(ws, Scope(None), {2}):
+        if i.file.startswith(KB_PREFIX):
+            continue
+        target = i.subject[len("link "):].rsplit(" line ", 1)[0]
+        joined = posixpath.normpath(posixpath.join(posixpath.dirname(i.file), target.split("#")[0])).rstrip("/")
+        if joined not in arriving:
+            plan.rules_links.append(i)
     return plan
 
 
@@ -207,6 +222,24 @@ def format_plan(plan: UpgradePlan, applying: bool) -> List[str]:
         lines.append("hooks: %s %s" % (HOOKS_JSON, plan.hooks))
     if plan.migrations:
         lines.append("migrations: %s" % ", ".join(plan.migrations))
+    if plan.rules_links:
+        lines.append("rules-file links that will not open: %d (new blocking issues once links in AGENTS.md "
+                     "and session logs are checked; fix them or exclude them with link_ignore)" % len(plan.rules_links))
+        for i in plan.rules_links[:10]:
+            lines.append("  - %s" % i.symptom)
+        if len(plan.rules_links) > 10:
+            lines.append("  - ... %d more" % (len(plan.rules_links) - 10))
+    if plan.legacy_links:
+        conv = [i for i in plan.legacy_links if i.fix and i.fix.get("safe")]
+        left = len(plan.legacy_links) - len(conv)
+        lines.append("legacy links: %d convert, %d left as issues (every edit journaled; undo with kb upgrade --rollback)"
+                     % (len(conv), left))
+        for i in plan.legacy_links[:10]:
+            lines.append("  - %s line %s: %s" % (i.file, i.subject.rsplit(" ", 1)[-1],
+                                                  "%s -> %s" % (i.fix["old"], i.fix["new"]) if i in conv
+                                                  else "%s (left: %s)" % (i.fix["old"], i.proposed_fix)))
+        if len(plan.legacy_links) > 10:
+            lines.append("  - ... %d more" % (len(plan.legacy_links) - 10))
     if plan.questions:
         lines.append("questions (%d open):" % len(plan.questions))
         for q in plan.questions:

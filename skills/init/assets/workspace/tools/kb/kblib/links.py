@@ -1,6 +1,7 @@
 """Checks 2 (links open by path), 3 (legacy [[...]] links), 4 (index coverage) and their fixes."""
 from __future__ import annotations
 
+import fnmatch
 import os
 import posixpath
 from typing import Dict, List, Optional, Set, Tuple
@@ -8,8 +9,8 @@ from urllib.parse import quote
 
 from .checks import iter_files, read_page, register_check, register_fixer
 from .issues import Issue, Scope
-from .markdown import Link, extract_links, split_target, title
-from .workspace import KbError
+from .markdown import Link, _iter_lines, extract_links, split_target, title
+from .workspace import KbError, _norm_dir
 
 KB_ROOT = "knowledge-base"
 SLOT_TARGETS = {"concept.md", "tables/", "contracts/", "usage/", "patterns/",
@@ -75,7 +76,7 @@ def resolve_path(ws, src_relpath: str, target: str, cache: Optional[DirCache] = 
 def _kb_roots(ws) -> List[str]:
     roots = [KB_ROOT]
     for m in ws.modules:
-        w = m.wiki.rstrip("/")
+        w = _norm_dir(m.wiki)
         if w and not (w == KB_ROOT or w.startswith(KB_ROOT + "/")) and "<" not in w:
             roots.append(w)
     return roots
@@ -136,6 +137,69 @@ def _kb_pages(ws, scope: Scope) -> List[str]:
     return out
 
 
+STOP_MARKER = "<!-- AGENT-SESSION-STOP -->"
+IGNORE_MARK = "kb:ignore-link"
+
+
+def _session_logs(ws) -> List[str]:
+    out = ["session_state.md"] + [m.path.rstrip("/") + "/session_state.md" for m in ws.modules
+                                  if m.path and "<" not in m.path]
+    mods = ws.root / "modules"
+    if mods.is_dir():
+        out += [p.relative_to(ws.root).as_posix() for p in sorted(mods.glob("*/session_state.md"))]
+    return out
+
+
+def _link_pages(ws, scope: Scope) -> List[str]:
+    """Pages whose links checks 2 and 3 read: the KB, the root and module AGENTS.md (the first files an
+    agent reads), and the head of each session log (the part above the first stop marker)."""
+    extra = ["AGENTS.md"] + [m.path.rstrip("/") + "/AGENTS.md" for m in ws.modules if m.path and "<" not in m.path]
+    extra += _session_logs(ws)
+    out, seen = _kb_pages(ws, scope), set()
+    seen.update(out)
+    for rel in extra:
+        if rel not in seen and scope.includes(rel) and (ws.root / rel).is_file():
+            seen.add(rel)
+            out.append(rel)
+    return out
+
+
+def _is_log(rel: str) -> bool:
+    return posixpath.basename(rel) == "session_state.md"
+
+
+def _in_kb(ws, rel: str) -> bool:
+    """A page inside a knowledge-base root. Files outside it (AGENTS.md, session logs) state rules in
+    prose; a name search there is a guess, so their fixes are never safe unless the path itself resolves."""
+    return rel.startswith(tuple(r.rstrip("/") + "/" for r in _kb_roots(ws)))
+
+
+def _link_text(ws, rel: str) -> Optional[str]:
+    """Page text to read links from; a session log is cut at its first stop marker (history below it
+    may name files that were renamed since, and history is not rewritten)."""
+    text = read_page(ws, rel)
+    if text is None or not _is_log(rel):
+        return text
+    for _no, off, body, in_fence in _iter_lines(text):
+        if not in_fence and body.strip() == STOP_MARKER:
+            return text[:off]
+    return text
+
+
+def _live_links(ws, text: str):
+    """Links not excluded by `.kb/config.json` link_ignore globs or an inline `kb:ignore-link` mark."""
+    raw = ws.config.get("link_ignore") or []
+    globs = [g for g in ([raw] if isinstance(raw, str) else raw) if isinstance(g, str) and g]
+    marked = {no for no, line in enumerate(text.splitlines(), start=1) if IGNORE_MARK in line}
+    for link in extract_links(text):
+        if link.line in marked:
+            continue
+        path = split_target(link.target)[0]
+        if any(fnmatch.fnmatchcase(path, g) or fnmatch.fnmatchcase(link.target, g) for g in globs):
+            continue
+        yield link
+
+
 def _module(ws, rel: str) -> str:
     return ws.module_for(rel) or ""
 
@@ -151,10 +215,13 @@ def _folder_filter(cands: List[str], path: str) -> List[str]:
 def _area(ws, rel: str) -> str:
     """The linking page's own area: its module wiki, the shared wiki, or the whole KB.
     A safe fix never points a link outside it."""
+    best = ""
     for m in ws.modules:
-        w = m.wiki.rstrip("/")
-        if w and "<" not in w and rel.startswith(w + "/"):
-            return w + "/"
+        w = _norm_dir(m.wiki)
+        if w and "<" not in w and rel.startswith(w + "/") and len(w) > len(best):
+            best = w
+    if best:
+        return best + "/"
     if rel.startswith(KB_ROOT + "/shared/"):
         return KB_ROOT + "/shared/"
     return KB_ROOT + "/"
@@ -166,14 +233,17 @@ def check_links(ws, scope: Scope) -> List[Issue]:
     cache = DirCache(ws.root)
     names: Optional[NameIndex] = None
     out = []
-    for rel in _kb_pages(ws, scope):
-        text = read_page(ws, rel)
+    for rel in _link_pages(ws, scope):
+        text = _link_text(ws, rel)
         if text is None:
             continue
         is_index = posixpath.basename(rel) == "INDEX.md"
-        for link in extract_links(text):
+        in_kb = _in_kb(ws, rel)
+        for link in _live_links(ws, text):
             if link.kind == "wiki":
                 continue
+            if not in_kb and link.kind == "path" and "/" not in link.target.rstrip("/"):
+                continue  # a bare file name in a rules file or log names a kind of file, not a route
             if resolve_path(ws, rel, link.target, cache) is not None:
                 continue
             if is_index and link.kind == "path" and link.target in SLOT_TARGETS:
@@ -190,17 +260,20 @@ def check_links(ws, scope: Scope) -> List[Issue]:
                 elif len(ci) > 1:
                     cands = sorted(ci)
             in_area = True
+            searched = False
             if not cands and not folder:
                 if names is None:
                     names = NameIndex(ws)
                 cands = _folder_filter(names.candidates(path), path)
                 area = _area(ws, rel)
                 in_area = all(c.startswith(area) for c in cands)
-            if len(cands) == 1 and in_area:
+                searched = True
+            if len(cands) == 1:
                 new = _rewrite_raw(link, _new_target(link, rel, cands[0], folder))
-                fix = {"kind": "replace_link", "safe": True, "file": rel, "start": link.start,
+                safe = in_area and not _is_log(rel) and (not searched or _in_kb(ws, rel))
+                fix = {"kind": "replace_link", "safe": safe, "file": rel, "start": link.start,
                        "end": link.end, "old": link.raw, "new": new}
-                proposed = "change `%s` to `%s`" % (link.raw, new)
+                proposed = "change `%s` to `%s`" % (link.raw, new) + ("" if safe else " (target `%s`; confirm first: not automatic)" % cands[0])
             else:
                 fix = {"kind": "replace_link", "safe": False, "file": rel, "start": link.start,
                        "end": link.end, "old": link.raw, "new": None}
@@ -226,24 +299,26 @@ def _wiki_candidates(names: NameIndex, target: str) -> List[str]:
 def check_wiki_links(ws, scope: Scope) -> List[Issue]:
     names: Optional[NameIndex] = None
     out = []
-    for rel in _kb_pages(ws, scope):
-        text = read_page(ws, rel)
+    for rel in _link_pages(ws, scope):
+        text = _link_text(ws, rel)
         if text is None or "[[" not in text:
             continue
-        for link in extract_links(text):
+        for link in _live_links(ws, text):
             if link.kind != "wiki":
                 continue
             if names is None:
                 names = NameIndex(ws)
             cands = _wiki_candidates(names, link.target)
             label = link.alias or link.target
+            area = _area(ws, rel)
             if len(cands) == 1:
                 _p, anchor = split_target(link.target)
                 target = quote(relative_link(rel, cands[0]), safe="/._-~()") + ("#" + anchor if anchor else "")
                 new = "[%s](%s)" % (label, target)
-                fix = {"kind": "replace_link", "safe": True, "file": rel, "start": link.start,
+                safe = cands[0].startswith(area) and _in_kb(ws, rel) and not _is_log(rel)
+                fix = {"kind": "replace_link", "safe": safe, "file": rel, "start": link.start,
                        "end": link.end, "old": link.raw, "new": new}
-                proposed = "change `%s` to `%s`" % (link.raw, new)
+                proposed = "change `%s` to `%s`" % (link.raw, new) + ("" if safe else " (target `%s`; confirm first: not automatic)" % cands[0])
             else:
                 fix = {"kind": "replace_link", "safe": False, "file": rel, "start": link.start,
                        "end": link.end, "old": link.raw, "new": None}

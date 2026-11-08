@@ -29,8 +29,9 @@ the init skill, which upgrades it, and stop.
    blocking ones first. Blocking means routing or evidence tracking
    would give an agent wrong context.
 
-The tool covers module registry paths, links that must open by path,
-legacy `[[...]]` links, index coverage, session stop markers,
+The tool covers module registry paths, links that must open by path
+(in the wiki, in the root and module `AGENTS.md`, and in the newest part
+of each session log), legacy `[[...]]` links, index coverage, session stop markers,
 confidence lines, required sections per page type, duplicate pages,
 evidence tracking and freshness, recipe drift, encoding, unknown source
 extensions, and the lookup index.

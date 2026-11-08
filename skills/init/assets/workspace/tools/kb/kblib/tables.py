@@ -327,7 +327,7 @@ def render_page(name: str, source: str, recs: List[Dict[str, str]], prof: dict) 
         "kind: table",
         "source: %s" % source,
         "status: partial",
-        "confidence: confirmed",
+        "confidence: schema-confirmed",
         "", "## Purpose", "",
         "- (business meaning not curated yet; confidence above covers structure only)",
         "", "## Keys", "",

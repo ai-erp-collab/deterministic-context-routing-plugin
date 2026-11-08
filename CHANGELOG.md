@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.2.1 - 2026-11-08
+
+- Upgrade plan shows legacy `[[...]]` link conversions before anything is
+  written: how many become relative links, how many stay as issues, with
+  examples. A legacy link is converted automatically only when its single
+  target sits in the same place as the page holding the link: that page's
+  module, the shared pages, or elsewhere in the knowledge base, the same
+  rule ordinary links follow.
+- Link exclusions: `link_ignore` globs in `.kb/config.json` (matched
+  against the link as written, for example `*other-repo/*`), or
+  `<!-- kb:ignore-link -->` on a line, for links that point outside the
+  workspace on purpose. Excluded links are neither checked nor fixed.
+- Links are now also checked in the root and module `AGENTS.md` and in the
+  newest part of each `session_state.md` (above its first stop marker).
+  There, a bare file name in backticks counts as prose, and a link is
+  changed automatically only when its own path resolves; session logs are
+  never edited automatically. A fix that is not automatic but has a single
+  target can still be applied with `kb fix --ids`.
+- Stop markers are checked in every module's `session_state.md` at the
+  path `modules.md` registers, not only under `modules/`. A stop marker
+  inside a code block no longer ends a log's checked part.
+- The upgrade plan also lists links in `AGENTS.md` and session logs that
+  will not open, since they become blocking issues after the upgrade.
+- A module's wiki path is read the same way everywhere (`./` and
+  backslashes allowed); a page in a nested module wiki belongs to the
+  innermost one.
+- The after-edit hook runs the checks once when it has nothing to fix.
+- Duplicate pages are found on the first check, before the lookup index
+  file is rebuilt; `check` still writes nothing.
+- The tool no longer leaves `__pycache__` folders in the workspace.
+- `fix`, `undo`, `ingest`, `table`, and `recipe promote` print
+  `run_id: <id>`.
+- Generated table pages carry `confidence: schema-confirmed`: the export
+  confirms structure, not business meaning.
+
 ## 0.2.0 - 2026-11-08
 
 - Integrity layer: the workspace now ships `tools/kb/kb.py`, a

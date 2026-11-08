@@ -211,7 +211,16 @@ def _maps(pages: Dict[str, dict]) -> Tuple[Dict[str, List[str]], Dict[str, List[
 
 def build_index(ws, changed: Optional[Set[str]] = None) -> dict:
     """Write .kb/entities.json. Full rebuild, or only the changed pages when given."""
-    old = load_index(ws) if changed is not None else None
+    index = compute_index(ws, changed)
+    ws.data_dir.mkdir(parents=True, exist_ok=True)
+    (ws.data_dir / INDEX_FILE).write_bytes((json.dumps(index, ensure_ascii=False) + "\n").encode("utf-8"))
+    return index
+
+
+def compute_index(ws, changed: Optional[Set[str]] = None, old: Optional[dict] = None) -> dict:
+    """The index in memory: full, or the stored one with the changed pages redone. Writes nothing."""
+    if changed is not None and old is None:
+        old = load_index(ws)
     if old is None:
         pages = {rel: _page_entry(ws, rel, m) for rel, m in kb_pages(ws).items()}
     else:
@@ -226,10 +235,7 @@ def build_index(ws, changed: Optional[Set[str]] = None) -> dict:
             else:
                 pages.pop(rel, None)
     names, terms = _maps(pages)
-    index = {"version": INDEX_VERSION, "pages": pages, "names": names, "terms": terms}
-    ws.data_dir.mkdir(parents=True, exist_ok=True)
-    (ws.data_dir / INDEX_FILE).write_bytes((json.dumps(index, ensure_ascii=False) + "\n").encode("utf-8"))
-    return index
+    return {"version": INDEX_VERSION, "pages": pages, "names": names, "terms": terms}
 
 
 def stale_pages(ws, index: Optional[dict]) -> Set[str]:
@@ -248,6 +254,15 @@ def ensure_index(ws) -> dict:
         return build_index(ws)
     stale = stale_pages(ws, index)
     return build_index(ws, stale) if stale else index
+
+
+def fresh_index(ws) -> dict:
+    """Like ensure_index, but never writes: checks read through this (check never edits)."""
+    index = load_index(ws)
+    if index is None:
+        return compute_index(ws)
+    stale = stale_pages(ws, index)
+    return compute_index(ws, stale, index) if stale else index
 
 
 def collisions(index: dict) -> Dict[str, List[str]]:

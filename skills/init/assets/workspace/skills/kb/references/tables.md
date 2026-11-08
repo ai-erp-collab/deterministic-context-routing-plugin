@@ -6,7 +6,7 @@
    `--encoding <code page>` for a text export that is neither UTF-8 nor
    UTF-16.
 3. Exit 0: the layout was recognized. The tool writes or updates one
-   page per table (structure only, `confidence: confirmed` for fields)
+   page per table (structure only, `confidence: schema-confirmed`)
    and reports what changed. An existing page for the same table is
    updated, never duplicated; curated descriptions stay.
 4. Exit 3: no known layout matched. The output lists the best header

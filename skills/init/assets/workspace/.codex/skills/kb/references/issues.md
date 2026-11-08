@@ -18,8 +18,21 @@ stop at the end of a turn, or the queue in `docs/checks/OPEN.md`.
    call (which page is right, what a term means).
 5. Run `kb check` again; fixed issues move to the report's resolved list.
 
-Every automatic edit is journaled under `.kb/journal/` with a run id.
-`kb undo <run-id>` reverts one run if the files have not changed since.
+Every automatic edit is journaled under `.kb/journal/`; the command
+prints `run_id: <id>`. `kb undo <id>` reverts one run if the files have
+not changed since.
+
+Links are checked in the knowledge base, in the root and module
+`AGENTS.md`, and in the newest part of each `session_state.md` (above its
+first stop marker). Outside the knowledge base, a bare file name in
+backticks (`concept.md`) is prose, not a link, and a link is changed
+automatically only when its own path resolves; session logs are never
+fixed automatically. A link that points outside the workspace on purpose
+(another repository, a note for a person) is excluded in one of two ways:
+a glob in `link_ignore` in `.kb/config.json`, matched against the link as
+written (for example `"*other-repo/*"` matches `../../other-repo/a.md`),
+or `<!-- kb:ignore-link -->` on the same line. Excluded links are neither
+checked nor fixed.
 
 A hook line ending in `(#N)` names an issue already in the queue. A line
 without an id is new and gets its number at the next full `kb check`.

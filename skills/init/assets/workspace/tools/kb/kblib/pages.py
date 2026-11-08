@@ -7,7 +7,7 @@ from .checks import read_page, register_check
 from .issues import Issue, Scope
 from .links import _kb_pages
 from .markdown import field, headings
-from .resolve import collisions, load_index
+from .resolve import collisions, fresh_index
 
 REQUIRED_SECTIONS = {
     "table": ["Keys", "Fields", "Relations"],
@@ -37,9 +37,7 @@ def check_sections(ws, scope: Scope) -> List[Issue]:
 
 
 def check_duplicates(ws, scope: Scope) -> List[Issue]:
-    index = load_index(ws)
-    if index is None:
-        return []  # check 15 reports the missing index
+    index = fresh_index(ws)  # in memory: a stale or missing file must not hide duplicates
     accepted = {tuple(sorted(p)) for p in ws.config.get("accepted_duplicates", [])}
     groups: Dict[Tuple[str, ...], List[str]] = {}
     for name, paths in collisions(index).items():

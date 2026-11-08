@@ -12,6 +12,8 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Set, Tuple
 
+sys.dont_write_bytecode = True  # no __pycache__ in the workspace
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
@@ -155,7 +157,7 @@ def _fix_run(ws: Workspace, args) -> int:
     if args.dry_run:
         print("kb fix: %d edits would be made (dry run, nothing written)" % len(journal.edits))
     else:
-        print("kb fix: %d fixes applied, %d edits (run %s)" % (applied, len(journal.edits), run_id))
+        print("kb fix: %d fixes applied, %d edits, run_id: %s" % (applied, len(journal.edits), run_id))
     for edit in journal.edits:
         print("%s: %s -> %s" % edit)
     if args.ids:
@@ -179,7 +181,7 @@ def _undo_add(p: argparse.ArgumentParser) -> None:
 
 def _undo_run(ws: Workspace, args) -> int:
     restored = Journal(ws).undo(args.run_id)
-    print("kb undo: %d files restored (run %s)" % (len(restored), args.run_id))
+    print("kb undo: %d files restored, run_id: %s" % (len(restored), args.run_id))
     for f in restored:
         print(f)
     return 0
@@ -330,7 +332,7 @@ def _ingest_run(ws: Workspace, args) -> int:
     journal = Journal(ws)
     run_id = journal.start_run("ingest")
     rows = artifacts.ingest(ws, args.paths, args.module, args.kind, journal)
-    print("kb ingest: %d file%s registered (run %s)" % (len(rows), "" if len(rows) == 1 else "s", run_id))
+    print("kb ingest: %d file%s registered, run_id: %s" % (len(rows), "" if len(rows) == 1 else "s", run_id))
     for r in rows:
         print("%s -> %s" % (r.origin, r.copy))
     return 0
@@ -463,7 +465,7 @@ def _recipe_run(ws: Workspace, args) -> int:
         except FileExistsError as exc:
             print("kb recipe promote: %s already exists; nothing written" % exc)
             return 1
-        print("kb recipe promote: wrote %s (run %s)" % (page, run_id))
+        print("kb recipe promote: wrote %s, run_id: %s" % (page, run_id))
         return 0
     if cmd == "drift":
         issues = checks.run_checks(ws, checks.Scope(None), {12})
@@ -627,7 +629,7 @@ def _table_pages(ws: Workspace, a) -> int:
             pages_written.append(page)
     if registered and pages_written and artifacts.mark_processed(ws, source, pages_written, journal):
         lines.append("registry: %s marked processed" % source)
-    print("kb table: %d page%s from %s (profile %s, run %s)"
+    print("kb table: %d page%s from %s (profile %s), run_id: %s"
           % (written, "" if written == 1 else "s", rel, pname, run_id))
     if not registered:
         print("note: %s has no registry row; `kb ingest` it so `source:` points at a stable copy" % rel)

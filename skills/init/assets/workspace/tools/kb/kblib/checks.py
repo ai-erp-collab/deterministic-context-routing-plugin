@@ -132,12 +132,13 @@ def check_registry(ws, scope: Scope) -> List[Issue]:
 
 def check_session_logs(ws, scope: Scope) -> List[Issue]:
     out = []
+    rels = {m.path.rstrip("/") + "/session_state.md" for m in ws.modules if m.path and "<" not in m.path}
     mods = ws.root / "modules"
-    if not mods.is_dir():
-        return out
-    for p in sorted(mods.glob("*/session_state.md")):
-        rel = p.relative_to(ws.root).as_posix()
-        if not scope.includes(rel):
+    if mods.is_dir():
+        rels |= {p.relative_to(ws.root).as_posix() for p in mods.glob("*/session_state.md")}
+    for rel in sorted(rels):
+        p = ws.root / rel
+        if not p.is_file() or not scope.includes(rel):
             continue
         text = read_page(ws, rel)
         if text is None or not text.strip():

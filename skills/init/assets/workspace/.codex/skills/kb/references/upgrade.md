@@ -7,7 +7,13 @@ template up to date without overwriting project edits.
    replace, files the project edited (kept; a `<file>.new` is written
    beside them), the managed block in the rules files, hook entries to
    merge, data migrations, and questions. Nothing is written.
-2. Show the plan to the user. Ask each question:
+   When the wiki has legacy `[[...]]` links, the plan counts how many
+   become relative links and how many stay as issues, with examples.
+   It also lists links in `AGENTS.md` and session logs that will not
+   open; they become blocking issues after the upgrade.
+2. Show the plan to the user, including the link conversions: they
+   rewrite links across the wiki and in the root and module `AGENTS.md`
+   (journaled, undone by `kb upgrade --rollback`). Ask each question:
    - evidence folders per module (table exports, library sources,
      usage examples, documents): answer with
      `--set-evidence <Module>=<path>;<path>`, or `--set-evidence <Module>=`
