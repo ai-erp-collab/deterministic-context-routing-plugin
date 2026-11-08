@@ -5,6 +5,12 @@ description: Use when the user asks, in a named module, to write or update a kno
 
 # Curate
 
+If `tools/kb/kb.py` is missing but `AGENTS.md` and `modules.md` exist,
+the workspace predates the integrity tool: tell the user to run the init
+skill, which upgrades it, and stop. Run tool commands from the workspace
+root; use `python3` or `py -3` where `python` is
+missing or older than 3.9.
+
 ## Before writing
 
 1. Resolve the module in `modules.md`. Read its `AGENTS.md`, its
@@ -20,31 +26,43 @@ description: Use when the user asks, in a named module, to write or update a kno
      flow template and list every place the shape occurs;
    - concept: the module's purpose, boundaries, and terms → `concept.md`.
      If the module has no `concept.md` yet, write it first.
-3. If a page for the same subject exists, update it instead of creating a
+3. Look the subject up first: `python tools/kb/kb.py resolve "<name>"`.
+   If a page for it exists, update that page instead of creating a
    second one. Facts that serve several modules go to
    `knowledge-base/shared/`.
+4. Large inputs: read a source file over about 50 KB through
+   `python tools/kb/kb.py outline <file>` and then only the span you
+   need. A table export goes through `python tools/kb/kb.py table <export> --module <module>`
+   (the `kb` skill's table procedure covers a layout the tool does not
+   know yet). Evidence that is not in `source-artifacts/` yet is
+   taken in first with `python tools/kb/kb.py ingest <path> --module <module>`.
 
 ## Writing
 
-4. Write the page under `knowledge-base/modules/<module>/`. Every
+5. Write the page under `knowledge-base/modules/<module>/`. Every
    non-obvious claim ends with a confidence label:
    - `confirmed`: seen in code, data, or a document you read;
    - `inferred`: concluded from evidence, not stated anywhere;
    - `runtime-unverified`: depends on behavior you could not run;
    - `blocked-by-access`: the evidence exists but you cannot reach it.
    Set the page-level `confidence:` to the weakest label on the page.
-5. Never edit source code while curating.
+6. Required sections: a table page has `## Keys`, `## Fields`, and
+   `## Relations`; a class or function contract has `## Purpose` and
+   `## Signature`.
+7. The page's `source:` line names the artifact copy under
+   `source-artifacts/` it was written from.
+8. Never edit source code while curating.
 
 ## After writing
 
-6. In `inventory.md`, end each line the page now covers with
+9. In `inventory.md`, end each line the page now covers with
    `-> <page path>`, or with `excluded: <reason>` when it deliberately
    stays out.
-7. Add or update one line for the page in the module `INDEX.md`: path and
-   the question the page answers.
-8. If the source was a raw artifact, move it from its `raw/` folder to the
-   matching `processed/` folder and update its row in
-   `source-artifacts/INDEX.md`: status `processed`, curated page linked.
-   Do this only after the page is written.
+10. Add or update one line for the page in the module `INDEX.md`: path
+    and the question the page answers.
+11. Do not touch the artifact or `source-artifacts/INDEX.md`. Once the
+    page names the copy in `source:`, the write hook (or the next
+    `python tools/kb/kb.py fix --safe`) records the artifact as processed
+    in the registry. Files stay where they are.
 
 Finish with the close-session skill.

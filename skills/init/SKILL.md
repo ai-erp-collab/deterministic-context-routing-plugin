@@ -26,9 +26,13 @@ session log that lets the next session resume.
 
 1. If root `session_state.md` exists, read it only down to the first line
    that equals `<!-- AGENT-SESSION-STOP -->`.
-2. If that latest entry is titled `init phase N complete`, continue with
-   phase N+1. If N is 5, setup is finished: say so and stop.
-3. Otherwise start at phase 0.
+2. If that latest entry is titled `init phase 0 started`, repeat phase 0
+   (it skips files that exist, so repeating is safe). If it is titled
+   `init phase N complete` and N is below 5, continue with phase N+1.
+3. Otherwise, if `AGENTS.md` and `modules.md` both exist, the workspace
+   is already set up: read `references/upgrade.md` and bring it up to
+   date. It ends early when nothing needs to change.
+4. Otherwise start at phase 0.
 
 ## Phases
 
@@ -42,6 +46,7 @@ Read only the reference file for the phase you are in.
 | 3 | `references/phase-3-modules.md` | modules registered |
 | 4 | `references/phase-4-intake.md` | raw material indexed, inventories written |
 | 5 | `references/phase-5-verify.md` | verification report |
+| upgrade | `references/upgrade.md` | existing workspace brought up to date |
 
 ## Record each phase
 

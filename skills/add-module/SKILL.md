@@ -7,7 +7,14 @@ description: Use when the user asks to add, register, or create a module in an e
 
 Inputs: a short lowercase module name, a one-line purpose, the source
 paths it covers, and aliases. **ASK** for anything missing; propose aliases
-from the name and purpose and let the user confirm.
+from the name and purpose and let the user confirm. **ASK** also for the
+module's evidence folders: where outside material for it lands (table
+exports, library sources, usage examples, documents). "None" is a valid
+answer.
+
+If `tools/kb/kb.py` is missing but `AGENTS.md` and `modules.md` exist,
+the workspace predates the integrity tool: tell the user to run the init
+skill, which upgrades it, and stop.
 
 ## Steps
 
@@ -21,9 +28,13 @@ from the name and purpose and let the user confirm.
      - wiki: `knowledge-base/modules/<module>/`
      - shared wiki: `knowledge-base/shared/`
      - sources: `<source path>`, `<source path>`
+     - evidence: `<folder>`, `<folder>`
      - artifacts: `source-artifacts/`
      - aliases: <alias>, <alias>
    ```
+
+   Leave out the `evidence:` line when the user named no folder. Every
+   file under an evidence folder is then tracked by the integrity tool.
 
 3. Copy `assets/module/` (in this skill's folder) to `modules/<module>/`
    and `assets/wiki/` to `knowledge-base/modules/<module>/`. In the copied
@@ -32,8 +43,10 @@ from the name and purpose and let the user confirm.
 4. In `modules/<module>/session_state.md`, replace the template entry with
    a first entry: module registered, sources listed, next action
    "inventory". End it with `<!-- AGENT-SESSION-STOP -->`.
-5. Inventory. Read in full every raw artifact listed for this module in
-   `source-artifacts/INDEX.md`, and the module's source paths. Write
+5. Inventory. Read in full every artifact listed for this module in
+   `source-artifacts/INDEX.md`, and the module's source paths. For a
+   file over about 50 KB, start from `python tools/kb/kb.py outline <file>`
+   and read it span by span until every part is covered. Write
    `knowledge-base/modules/<module>/inventory.md`: one line per named
    item (table, field group, function, class, flag, constant, naming
    rule, constraint) with the file it came from. Do not rank or skip

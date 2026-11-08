@@ -7,12 +7,14 @@ Check each item and fix what fails before recording this phase:
    and for angle-bracket placeholders such as `<Project>`. Files under
    `templates/` keep their placeholders on purpose.
 2. `idea.md` has `status: confirmed`.
-3. Every module in `modules.md` has its module folder, its
-   knowledge-base folder with `INDEX.md` and `inventory.md`, and a
-   `session_state.md` ending its latest entry with the stop marker.
-4. `source-artifacts/INDEX.md` lists every file under any `raw/` folder.
-5. `CLAUDE.md` contains the line `@AGENTS.md`.
-6. Run the check skill once and report its result.
+3. Every module in `modules.md` has an `inventory.md` in its
+   knowledge-base folder.
+4. `CLAUDE.md` contains the line `@AGENTS.md`.
+5. Run the check skill once. Its `python tools/kb/kb.py check` must report
+   no blocking issues; list its open issues to the user by id (minor
+   ones, such as evidence still waiting to be processed after intake,
+   are expected). It covers module paths, indexes, session stop markers,
+   and evidence tracking.
 
 Record the phase with next action "curate the first artifact of
 `<first module>`" and tell the user setup is complete.

@@ -23,7 +23,7 @@ claude plugin install context-routing@deterministic-context-routing
 
 ## How it works
 
-`init` turns your repository into a plain-Markdown workspace with four parts:
+`init` turns your repository into a plain-Markdown workspace with five parts:
 
 - **Context routing.** Every task takes the same path: rules file ->
   module registry -> the module's page -> its knowledge pages -> its
@@ -39,6 +39,11 @@ claude plugin install context-routing@deterministic-context-routing
 - **Session log.** Each module keeps a newest-first log of intent,
   evidence, assumptions, and the next step: what git history does not
   record. (`close-session`)
+- **Integrity checks.** A small tool shipped in the workspace
+  (`tools/kb/`) checks links, indexes, evidence tracking, and required
+  page sections after each edit. Fixes with exactly one correct answer
+  are applied and journaled so they can be undone; everything else
+  becomes a numbered issue for the agent. (`kb`, `check`)
 
 The workspace keeps working without the plugin for any agent that reads
 `AGENTS.md`.
@@ -72,16 +77,21 @@ Once the workspace is filled in, these follow without extra setup:
 | `/context-routing:curate` | turn an artifact or code into a concept, table, contract, or usage-flow page with confidence labels |
 | `/context-routing:close-session` | record what was done and the one next action; capture recurring traps |
 | `/context-routing:cross-module-owner-api` | reuse a rule owned by another module through its API instead of copying it |
-| `/context-routing:check` | report workspace defects to `docs/checks/`; fixes only the issues you name |
+| `/context-routing:check` | run the integrity checks, apply the safe fixes, report open issues to `docs/checks/`; fix the issues you name |
+| `/context-routing:kb` | resolve what the checks report; read large files by outline; take in evidence and table exports; look up terms and pages before writing |
 
 Skills also fire on their own when your request matches them.
+
+Requirements: Python 3.9 or later (standard library only) for the
+integrity checks, found as `python`, `python3`, or `py -3`. Without
+it the hooks stay silent and the rest of the workspace works as before.
 
 ## Numbers
 
 What the plugin and its workspace add to every session, measured as input
 tokens with Claude Code on a workspace set up by `init`:
 
-Measured 2026-10-10 with 2.1.158 (Claude Code)
+Measured 2026-10-10 with 2.1.158 (Claude Code), version 0.1.0
 
 | Always-loaded component | Tokens |
 |---|---|
@@ -96,8 +106,11 @@ methodology's evidence, linked under "Proven on".
 ## What it runs, sends, and fetches
 
 The skills are Markdown instructions. They read and write files in your
-repository only. The plugin has no hooks, no MCP servers, no scripts, and
-makes no network calls.
+repository only. The plugin adds three hooks (after a file edit, at the
+end of a turn, at session start); each runs the workspace's own
+`tools/kb/kb.py` with Python and does nothing when that file is absent.
+The tool uses the Python standard library, reads and writes files inside
+the workspace only, and makes no network calls. No MCP servers.
 
 ## Proven on
 
