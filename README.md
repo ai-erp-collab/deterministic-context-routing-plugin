@@ -15,7 +15,7 @@ following its INSTALL.md.* Or install it yourself:
 | Codex | `codex plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin`, then `/plugins` -> Context Routing -> install (Codex app: Plugins sidebar) | skills; hooks from the workspace `.codex/hooks.json` after you trust them with `/hooks` |
 | Cursor | Customize -> From GitHub Repository -> paste the repository URL | skills; checks manual |
 | OpenCode | in `opencode.json`: `"plugin": ["context-routing@git+https://github.com/ai-erp-collab/deterministic-context-routing-plugin.git"]` (OpenCode 1.x) or the same entry under `"plugins"` (2.x) | skills; checks manual |
-| Antigravity | `agy plugin install https://github.com/ai-erp-collab/deterministic-context-routing-plugin` | skills; checks manual |
+| Antigravity (CLI and IDE) | `agy plugin install https://github.com/ai-erp-collab/deterministic-context-routing-plugin`; installs into `~/.gemini/config/plugins/`, which the CLI and the IDE both read. The IDE does not put `agy` on `PATH`: run it as `~/.gemini/bin/agy` (Windows PowerShell: `& "$env:USERPROFILE\.gemini\bin\agy.exe" plugin install ...`), then reload the IDE window | skills; checks manual |
 | Hermes | `hermes plugins install ai-erp-collab/deterministic-context-routing-plugin --enable`; plugin skills load explicitly (`skill_view("context-routing:init")`); in a set-up workspace run `hermes skills trust` so `.agents/skills/` loads | skills; checks manual |
 | Any other agent | copy `skills/` to wherever the agent loads skills; the workspace itself is plain Markdown plus `AGENTS.md` | skills; checks manual |
 

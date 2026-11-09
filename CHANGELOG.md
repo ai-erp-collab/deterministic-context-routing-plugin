@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.1 - 2026-11-09
+
+### Fixed
+
+- Antigravity: the manifest logo moved to `assets/icon.png`; the old
+  `.claude-plugin/` path was left out of the Marketplace bundle and failed
+  the build (`agy plugin validate`).
+- Antigravity IDE: install docs say where `agy` lives when it is not on
+  `PATH` (`~/.gemini/bin/`) and that the CLI and the IDE share the
+  global plugin folder `~/.gemini/config/plugins/`.
+
 ## 0.3.0 - 2026-11-09
 
 ### Changed

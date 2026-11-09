@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "context-routing",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Deterministic Context Routing: a file-based workspace that gives your coding agent exactly the context it needs in a large codebase and keeps its thread across sessions.",
   "author": {
     "name": "ai-erp-collab",

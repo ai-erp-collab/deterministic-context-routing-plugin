@@ -17,7 +17,7 @@ Antigravity, Hermes, or another one. If you cannot tell, ask the user.
 | Codex | `codex plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin`, then `/plugins`, pick Context Routing, install (Codex app: Plugins sidebar) |
 | Cursor | Customize, From GitHub Repository, paste the repo URL |
 | OpenCode | add `"context-routing@git+https://github.com/ai-erp-collab/deterministic-context-routing-plugin.git"` to `plugin` (V1) or `plugins` (V2) in `opencode.json` |
-| Antigravity | `agy plugin install https://github.com/ai-erp-collab/deterministic-context-routing-plugin` |
+| Antigravity (CLI or IDE) | `agy plugin install https://github.com/ai-erp-collab/deterministic-context-routing-plugin`. If `agy` is not found (the IDE does not add it to `PATH`), use `~/.gemini/bin/agy` (Windows: `%USERPROFILE%\.gemini\bin\agy.exe`). It installs into `~/.gemini/config/plugins/`, which both the CLI and the IDE read; do not clone into that folder by hand |
 | Hermes | `hermes plugins install ai-erp-collab/deterministic-context-routing-plugin --enable` |
 
 Slash commands and UI steps are typed by the user, not by you: tell the
@@ -41,7 +41,8 @@ you copied and which you skipped.
 
 ## 5. After installing
 
-1. Ask the user to start a new session, so the agent loads the skills.
+1. Ask the user to start a new session, so the agent loads the skills
+   (Antigravity IDE: reload the window, then start a new conversation).
 2. In the new session, run the `init` skill to set up the workspace.
 3. Codex: tell the user to trust the project hooks with `/hooks`, or the
    checks will not run on edits.
