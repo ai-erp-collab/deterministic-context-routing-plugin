@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.2.2 - 2026-11-09
+
+- Running `kb check` no longer leaves the git tree dirty. The tool writes
+  `docs/checks/.gitignore` (dated reports stay local; `OPEN.md` is the
+  shared current state) and `.kb/.gitignore` (backups, undo journal,
+  upgrade log, and the rebuilt lookup index stay local; config, profiles,
+  issue ids, and the shipped-file manifest are committed). Each file is
+  written once, also in existing workspaces, and never replaced after the
+  project edits it.
+- Confidence labels agree everywhere: the page templates, the session
+  entry template, and `curate` name `schema-confirmed` and
+  `runtime-confirmed` as evidence-layer forms of `confirmed`, so a table
+  page from `kb table` (`confidence: schema-confirmed`) matches its own
+  template.
+- YAML front matter is metadata, not links: links and paths inside a
+  leading `---` block are neither checked nor converted.
+- Clearer output: an upgrade within the same workspace format says
+  "shipped files changed, workspace format 1 unchanged" instead of
+  "version 1 -> 1"; the snapshot line says what it holds (the knowledge
+  base, rules files, and `.kb/` data; other edits are in the undo
+  journal); `kb fix` says when a fix needed no file change.
+
 ## 0.2.1 - 2026-11-08
 
 - Upgrade plan shows legacy `[[...]]` link conversions before anything is

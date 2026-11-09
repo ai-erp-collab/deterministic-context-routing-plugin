@@ -45,6 +45,8 @@ missing or older than 3.9.
    - `inferred`: concluded from evidence, not stated anywhere;
    - `runtime-unverified`: depends on behavior you could not run;
    - `blocked-by-access`: the evidence exists but you cannot reach it.
+   `confirmed` may name its layer: `schema-confirmed` (structure seen in
+   an export) or `runtime-confirmed` (observed running).
    Set the page-level `confidence:` to the weakest label on the page.
 6. Required sections: a table page has `## Keys`, `## Fields`, and
    `## Relations`; a class or function contract has `## Purpose` and

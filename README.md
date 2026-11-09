@@ -34,8 +34,9 @@ claude plugin install context-routing@deterministic-context-routing
   agent needs them, so routing lands on a ready answer, not on raw
   sources. (`curate`)
 - **Confidence labels.** Each claim is marked confirmed, inferred,
-  runtime-unverified, or blocked-by-access, so you and the agent both see
-  what was really checked. (`curate`, `check`)
+  runtime-unverified, or blocked-by-access, and confirmed can name its
+  layer (schema-confirmed, runtime-confirmed), so you and the agent both
+  see what was really checked. (`curate`, `check`)
 - **Session log.** Each module keeps a newest-first log of intent,
   evidence, assumptions, and the next step: what git history does not
   record. (`close-session`)
