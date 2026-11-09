@@ -1,0 +1,17 @@
+{
+  "name": "deterministic-context-routing",
+  "owner": {
+    "name": "ai-erp-collab",
+    "email": "tolstolutskyy@gmail.com"
+  },
+  "metadata": {
+    "description": "Marketplace for the context-routing plugin."
+  },
+  "plugins": [
+    {
+      "name": "context-routing",
+      "source": "./",
+      "description": "Deterministic Context Routing: exact context for your agent in a large codebase, and session continuity."
+    }
+  ]
+}

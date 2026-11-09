@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.3.0 - 2026-11-09
+
+### Changed
+
+- Workspace skills live in `.agents/skills/`, the folder Codex, Cursor,
+  OpenCode, Antigravity, and Hermes read as project skills (workspace
+  format 2). `kb upgrade` runs migration 002: it moves the project's
+  `skills/cross-module-owner-api/` there, removes unedited `skills/kb/`
+  and `.codex/skills/kb/` copies, rewrites links to them in `AGENTS.md`,
+  `CLAUDE.md`, `README.md`, and `ASSEMBLY.md`, and keeps every copy the
+  project edited, reporting it (and `kb check` lists it) for a manual
+  merge. `kb upgrade --rollback` undoes it.
+- Existing workspaces: run the `init` skill in the workspace to upgrade
+  it (the 0.2.x tool does not prompt for this format). Links to the old
+  skill folders outside those four files, for example in module session
+  logs, are not rewritten; update them by hand.
+
+### Added
+
+- Codex manifest (`.codex-plugin/plugin.json`, no plugin hooks) and
+  marketplace (`.agents/plugins/marketplace.json`).
+- Cursor manifest and marketplace (`.cursor-plugin/`).
+- Antigravity manifest (`.antigravity-plugin/plugin.json`).
+- OpenCode plugin (`.opencode/plugins/context-routing.js`, `index.js`,
+  `package.json`; no dependencies) that registers the skills on OpenCode
+  1.x and 2.x.
+- Portable Agent Plugins v1 manifest (`plugin.json`), loaded by Hermes.
+- `INSTALL.md`: install steps written for an agent the user asks to
+  install the plugin.
+- The export fails when manifest versions differ.
+
+### Notes
+
+- Cursor, OpenCode, Antigravity, and Hermes get no hooks: run the `check`
+  skill before closing a session. Codex runs the checks from the
+  workspace `.codex/hooks.json` after the user trusts it with `/hooks`.
+
 ## 0.2.2 - 2026-11-09
 
 - Running `kb check` no longer leaves the git tree dirty. The tool writes

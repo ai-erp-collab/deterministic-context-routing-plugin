@@ -20,9 +20,11 @@
    `AGENTS.md`), then `python tools/kb/kb.py doctor`. Skip this step if
    the user chose in phase 0 to continue without Python.
 6. Skills: Claude Code gets `kb` and the other skills from this plugin.
-   Codex finds `kb` in `.codex/skills/kb/`; tell Codex users to trust
-   the project hooks with `/hooks`, or the checks will not run on edits.
-   Any other agent: install `skills/kb/` where that agent loads skills.
+   Codex, Cursor, OpenCode, Antigravity and Hermes read `.agents/skills/`
+   as project skills (Hermes after `hermes skills trust`). Tell Codex
+   users to trust the project hooks with `/hooks`, or the checks will not
+   run on edits. Agents without hooks run `python tools/kb/kb.py check`
+   before closing a session, as `AGENTS.md` already says.
 7. Tell the user how to confirm the rules load: in a new session, ask for
    the test command without allowing tool use; the answer must match
    step 3. Record this as unverified until the user reports the result.

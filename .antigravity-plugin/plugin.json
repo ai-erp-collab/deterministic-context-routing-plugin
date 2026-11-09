@@ -1,0 +1,26 @@
+{
+  "name": "context-routing",
+  "displayName": "Context Routing",
+  "version": "0.3.0",
+  "description": "Deterministic Context Routing: a file-based workspace that gives your coding agent exactly the context it needs in a large codebase and keeps its thread across sessions.",
+  "logo": ".claude-plugin/icon.png",
+  "suggestedPrompts": [
+    "Turn this repo into a context-routing workspace.",
+    "Add a module for src/billing."
+  ],
+  "category": "Developer Tools",
+  "keywords": [
+    "context-engineering",
+    "agent-skills",
+    "ai-agents",
+    "documentation",
+    "knowledge-base"
+  ],
+  "author": {
+    "name": "ai-erp-collab",
+    "email": "tolstolutskyy@gmail.com"
+  },
+  "homepage": "https://github.com/ai-erp-collab/deterministic-context-routing-plugin",
+  "repository": "https://github.com/ai-erp-collab/deterministic-context-routing-plugin",
+  "license": "MIT"
+}

@@ -16,7 +16,7 @@
 4. Check that these now exist in the target: `AGENTS.md`, `modules.md`,
    `known_issues.md`, `session_state.md`, `idea.md`,
    `knowledge-base/INDEX.md`, `source-artifacts/INDEX.md`, `templates/`,
-   `skills/cross-module-owner-api/SKILL.md`, `skills/kb/SKILL.md`,
+   `.agents/skills/cross-module-owner-api/SKILL.md`, `.agents/skills/kb/SKILL.md`,
    `tools/kb/kb.py`, `.codex/hooks.json`.
 5. Run `python --version` (or `python3 --version`, `py -3 --version`). The integrity tool
    needs Python 3.9 or later, standard library only. If none of them

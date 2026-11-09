@@ -1,0 +1,20 @@
+{
+  "name": "deterministic-context-routing",
+  "interface": {
+    "displayName": "Deterministic Context Routing"
+  },
+  "plugins": [
+    {
+      "name": "context-routing",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

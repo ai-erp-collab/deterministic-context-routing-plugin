@@ -3,21 +3,27 @@
 Give your coding agent exactly the context it needs in a large codebase,
 and let it keep its thread across sessions.
 
-Run these two commands one after the other inside Claude Code. The first
-adds this repository as a plugin marketplace; the second installs the
-plugin from it.
+## Install
 
-```
-/plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin
-/plugin install context-routing@deterministic-context-routing
-```
+The quickest way is to tell your agent: *Install the plugin from
+https://github.com/ai-erp-collab/deterministic-context-routing-plugin
+following its INSTALL.md.* Or install it yourself:
 
-From a regular terminal, the same two steps are:
+| Agent | Install | What you get |
+|---|---|---|
+| Claude Code | `/plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin`, then `/plugin install context-routing@deterministic-context-routing` | skills + hooks |
+| Codex | `codex plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin`, then `/plugins` -> Context Routing -> install (Codex app: Plugins sidebar) | skills; hooks from the workspace `.codex/hooks.json` after you trust them with `/hooks` |
+| Cursor | Customize -> From GitHub Repository -> paste the repository URL | skills; checks manual |
+| OpenCode | in `opencode.json`: `"plugin": ["context-routing@git+https://github.com/ai-erp-collab/deterministic-context-routing-plugin.git"]` (OpenCode 1.x) or the same entry under `"plugins"` (2.x) | skills; checks manual |
+| Antigravity | `agy plugin install https://github.com/ai-erp-collab/deterministic-context-routing-plugin` | skills; checks manual |
+| Hermes | `hermes plugins install ai-erp-collab/deterministic-context-routing-plugin --enable`; plugin skills load explicitly (`skill_view("context-routing:init")`); in a set-up workspace run `hermes skills trust` so `.agents/skills/` loads | skills; checks manual |
+| Any other agent | copy `skills/` to wherever the agent loads skills; the workspace itself is plain Markdown plus `AGENTS.md` | skills; checks manual |
 
-```
-claude plugin marketplace add ai-erp-collab/deterministic-context-routing-plugin
-claude plugin install context-routing@deterministic-context-routing
-```
+"Checks manual" means running `python tools/kb/kb.py check` (the `check`
+skill) before closing a session; `AGENTS.md` in the workspace already
+tells the agent to do so. From a regular terminal, the Claude Code steps
+are `claude plugin marketplace add ...` and `claude plugin install ...`
+with the same arguments.
 
 ![Context routing in action](assets/demo.gif)
 
@@ -107,7 +113,7 @@ methodology's evidence, linked under "Proven on".
 ## What it runs, sends, and fetches
 
 The skills are Markdown instructions. They read and write files in your
-repository only. The plugin adds three hooks (after a file edit, at the
+repository only. On Claude Code the plugin adds three hooks (after a file edit, at the
 end of a turn, at session start); each runs the workspace's own
 `tools/kb/kb.py` with Python and does nothing when that file is absent.
 The tool uses the Python standard library, reads and writes files inside
@@ -122,8 +128,8 @@ Large proprietary ERP. Evidence, experiments, and reasoning live in the
 
 `skills/kb/`, `skills/cross-module-owner-api/`, and the `assets/` folders
 of `init` and `add-module` are generated from the workspace template on
-every release. Inside a workspace, `skills/kb/` and `.codex/skills/kb/`
-are identical copies. Report changes to these files as issues rather than
+every release. Inside a workspace the same skills live in
+`.agents/skills/`. Report changes to these files as issues rather than
 editing the copies.
 
 ## License

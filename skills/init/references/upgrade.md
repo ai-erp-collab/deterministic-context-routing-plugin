@@ -35,9 +35,12 @@ missing or older than 3.9 (the tool needs Python 3.9 or later).
    deleted.
 5. Run `python tools/kb/kb.py check` in the workspace and report its
    summary.
-6. Codex users: tell them to trust the project hooks with `/hooks`.
-   Agents other than Codex and Claude Code: install `skills/kb/` where
-   that agent loads skills.
+6. Claude Code gets `kb` and the other skills from this plugin. Codex,
+   Cursor, OpenCode, Antigravity and Hermes read `.agents/skills/` as
+   project skills (Hermes after `hermes skills trust`). Codex users:
+   tell them to trust the project hooks with `/hooks`. Old `skills/` and
+   `.codex/skills/` copies are moved or removed by the upgrade; any it
+   kept are listed as `kept ...` lines — merge and delete them.
 
 Record the upgrade at the top of root `session_state.md`:
 
