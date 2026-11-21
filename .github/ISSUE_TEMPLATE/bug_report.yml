@@ -1,0 +1,74 @@
+name: Bug report
+description: Something in the plugin, its hooks, or the integrity checks does not work as described.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Security problems: please use `SECURITY.md` instead of a public issue.
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      description: From `plugin.json` or `CHANGELOG.md` in the installed plugin.
+      placeholder: "0.3.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      options:
+        - Claude Code
+        - Codex
+        - Cursor
+        - OpenCode
+        - Antigravity
+        - Hermes
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: agent-version
+    attributes:
+      label: Agent version and OS
+      placeholder: "Claude Code 2.x on Windows 11, Python 3.12"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Install
+        - init / add-module (workspace setup)
+        - curate / kb (knowledge pages)
+        - check / integrity tool
+        - Hooks
+        - close-session / session log
+        - cross-module-owner-api
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you asked the agent or ran, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: check-output
+    attributes:
+      label: Output of `python tools/kb/kb.py check`
+      description: Run it from the workspace root, if the workspace exists. Remove anything private.
+      render: text
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues for a duplicate.
+          required: true
+        - label: I removed private names and paths from the text above.
+          required: true

@@ -1,0 +1,23 @@
+name: Suggestion
+description: Propose a change to a skill, a new check, or support for another agent.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Describe the situation in your workflow, not only the proposed solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Which skill, check, or install path it touches, and how it should behave.
+    validations:
+      required: true
+  - type: textarea
+    id: cost
+    attributes:
+      label: Cost per session
+      description: Does it add text that is loaded into every session (skill descriptions, AGENTS.md)? If so, roughly how much.
